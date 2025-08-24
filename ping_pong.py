@@ -26,6 +26,11 @@ BALL_SPEED_X = 10
 BALL_SPEED_Y = 11
 GAP_FROM_WALL = 30
 
+pad1 = None
+pad2 = None
+ball = None
+
+
 REQUIRE = 5
 winner = None
 
@@ -33,16 +38,27 @@ score1 = 0
 score2 = 0
 
 paused = False
+
+#-----------------------------------------------------------------------------
+
+#UI
+
+font.init()
+score_font = font.Font(None,56)
+hint_font = font.Font(None,28)
+
+
+
 #-----------------------------------------------------------------------------
 
 #Functions
 
 def draw_court():
     #background
-    window.fill(BLACK)
+    Window.fill(BLACK)
 
     #border
-    draw.rect(Window, LINES, Rect(8,8, length-16, height-16), width=4)
+    draw.rect(Window, WHITE, Rect(8,8, length-16, height-16), width=4)
 
     #centre dashed line
     dash_h = 18
@@ -50,17 +66,16 @@ def draw_court():
     x = length//2
     y = 8
     while y < height:
-        draw.line(Window, LINES, (x,y), (x,min(y+dash_h, height-8),width = 4))
+        draw.line(Window, WHITE, (x,y), (x,min(y+dash_h, height-8)), width=4)
         y += dash_h + gap_dash
 
+def draw_ui():
+    score_text = score_font.render(f"{score1}    :    {score2}", True, WHITE)
+    Window.blit(score_text, (length//2, - score_text.get_width()//2, 16))
 
-
-
-
-
-
-
-
+    if winner is not None:
+        win_text = hint_font.render(f"Player {winner} wins, R to reset", True, WHITE)
+        Window.blit(win_text, (length//2, - win_text.get_width()//2, 60))
 
 #-----------------------------------------------------------------------------
 
@@ -69,9 +84,9 @@ def draw_court():
 game = True
 while game:
     for e in event.get():
-        if e.type == QUIT():
+        if e.type == QUIT:
             game = False
-        if e.type == KEY_DOWN:
+        if e.type == KEYDOWN:
             if e.type == K_ESCAPE:
                 game == False
             if e.type == K_p:
@@ -82,7 +97,10 @@ while game:
                 pad1.rect.centery = height//2
                 pad2.rect.centery = height//2
                 ball.center_serve(direction=1)
-
+    draw_court()
+    draw_ui()
+    display.update()
+    clock.tick(FPS)
 
 
 
