@@ -4,8 +4,8 @@ from pygame import *
 #Window and initiation
 init()
 
-length = 700
-height = 500
+length = 1050
+height = 750
 
 Window = display.set_mode((length,height))
 display.set_caption("Pong")
@@ -19,9 +19,9 @@ WHITE = (255,255,255)
 PADDLEBALL = (240,240,240)
     
     #paddle, ball, and game variables
-PAD_W, PAD_H = 15, 150
+PAD_W, PAD_H = 15, 115
 BALL_R = 10
-PAD_SPEED = 20
+PAD_SPEED = 13
 BALL_SPEED_X = 10
 BALL_SPEED_Y = 11
 GAP_FROM_WALL = 30
@@ -47,10 +47,54 @@ font.init()
 score_font = font.Font(None,56)
 hint_font = font.Font(None,28)
 
+#-----------------------------------------------------------------------------
 
+#Classes
+
+class GameSprite(sprite.Sprite):
+    def __init__(self, surf, x, y, speed=0):
+        super().__init__()
+        self.image = surf
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.speed = speed
+
+    def reset(self):
+        Window.blit(self.image, self.rect.topleft)
+
+class Player(GameSprite):
+    def clamp(self):        #not off-screen
+        if self.rect.top < 8:
+            self.rect.top = 8
+        if self.rect.bottom > height-8:
+            self.rect.bottom = height-8
+
+    def update_l(self):
+        keys = key.get_pressed()
+        if keys[K_w]:
+            self.rect.y -= self.speed
+        if keys[K_s]:
+            self.rect.y += self.speed
+        self.clamp()
+
+    def update_r(self):
+        keys = key.get_pressed()
+        if keys[K_UP]:
+            self.rect.y -= self.speed
+        if keys[K_DOWN]:
+            self.rect.y += self.speed
+        self.clamp()
 
 #-----------------------------------------------------------------------------
 
+#Objects
+
+paddle_surf = Surface((PAD_W, PAD_H))
+paddle_surf.fill(PADDLEBALL)
+
+racket1 = Player(paddle_surf.copy(), GAP_FROM_WALL, (height - PAD_H)//2, PAD_SPEED)
+racket2 = Player(paddle_surf.copy(), length - GAP_FROM_WALL - PAD_W, (height - PAD_H)//2, PAD_SPEED)
+
+#-----------------------------------------------------------------------------
 #Functions
 
 def draw_court():
@@ -97,8 +141,15 @@ while game:
                 pad1.rect.centery = height//2
                 pad2.rect.centery = height//2
                 ball.center_serve(direction=1)
+
+    racket1.update_l()
+    racket2.update_r()
+
+
     draw_court()
     draw_ui()
+    racket1.reset()
+    racket2.reset()
     display.update()
     clock.tick(FPS)
 
