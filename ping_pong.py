@@ -35,6 +35,35 @@ score2 = 0
 paused = False
 #-----------------------------------------------------------------------------
 
+#Functions
+
+def draw_court():
+    #background
+    window.fill(BLACK)
+
+    #border
+    draw.rect(Window, LINES, Rect(8,8, length-16, height-16), width=4)
+
+    #centre dashed line
+    dash_h = 18
+    gap_dash = 14
+    x = length//2
+    y = 8
+    while y < height:
+        draw.line(Window, LINES, (x,y), (x,min(y+dash_h, height-8),width = 4))
+        y += dash_h + gap_dash
+
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------
+
 #Game Loop
 
 game = True
