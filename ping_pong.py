@@ -187,7 +187,7 @@ def handle_scoring():
         ball.center_serve(direction=-1)
     elif ball.rect.right >= length:
         score1 += 1
-        ball.center_serve(direction=-1)
+        ball.center_serve(direction=1)
 
     
     #win con
@@ -212,15 +212,15 @@ while game:
         if e.type == QUIT:
             game = False
         if e.type == KEYDOWN:
-            if e.type == K_ESCAPE:
+            if e.key == K_ESCAPE:
                 game == False
-            if e.type == K_p:
+            if e.key== K_p:
                 paused = not paused
-            if e.type == K_r:
+            if e.key == K_r:
                 score1 = score2 = 0
                 winner = None
-                pad1.rect.centery = height//2
-                pad2.rect.centery = height//2
+                racket1.rect.centery = height//2
+                racket2.rect.centery = height//2
                 ball.center_serve(direction=1)
 
     if paused:
@@ -232,17 +232,12 @@ while game:
         clock.tick(FPS)
         continue
 
-#it displays it only after
-#restting also does not work
-
     racket1.update_l()
     racket2.update_r()
     ball.update()
 
     handle_paddle_collisions1()
     handle_scoring()
-
-#it cant pause tho
 
     draw_court()
     draw_ui()
@@ -256,10 +251,6 @@ while game:
     clock.tick(FPS)
 
 quit()
-
-
-
-
 
 
 
